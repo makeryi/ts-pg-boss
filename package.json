@@ -1,6 +1,6 @@
 {
   "name": "ts-pg-boss",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Typesafe pg-boss",
   "type": "module",
   "exports": {
@@ -12,6 +12,7 @@
   "files": [
     "dist",
     "README.md",
+    "LICENSE",
     "package.json"
   ],
   "scripts": {

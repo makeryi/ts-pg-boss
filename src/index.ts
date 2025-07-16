@@ -19,6 +19,8 @@ export class Boss<T extends StandardSchemaV1> {
 
   register(job: Job<T>) {
     this.jobs.push(job)
+
+    return this
   }
 
   async start() {
