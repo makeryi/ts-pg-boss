@@ -1,12 +1,24 @@
 {
   "name": "ts-pg-boss",
+  "version": "0.0.1",
   "description": "Typesafe pg-boss",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsdown --dts src/index.ts",
+    "prepare": "husky"
+  },
   "dependencies": {
     "pg-boss": "^10.3.2"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.0.5",
+    "@changesets/cli": "^2.29.5",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@standard-schema/spec": "^1.0.0",
