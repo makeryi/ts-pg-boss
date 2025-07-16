@@ -1,6 +1,6 @@
 {
   "name": "ts-pg-boss",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Typesafe pg-boss",
   "type": "module",
   "exports": {
@@ -9,6 +9,11 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
   "scripts": {
     "build": "tsdown --dts src/index.ts",
     "prepare": "husky"
