@@ -1,11 +1,13 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 import PgBoss from 'pg-boss'
 
-export class Boss {
+export class Boss<T extends StandardSchemaV1> {
   readonly boss: PgBoss
+  private jobs: Job<T>[]
 
   constructor(connection: string) {
     this.boss = new PgBoss(connection)
+    this.jobs = []
   }
 
   defineJob(jobName: string) {
@@ -15,8 +17,16 @@ export class Boss {
     })
   }
 
+  register(job: Job<T>) {
+    this.jobs.push(job)
+  }
+
   async start() {
     await this.boss.start()
+
+    for (const job of this.jobs) {
+      await job.start()
+    }
   }
 }
 
