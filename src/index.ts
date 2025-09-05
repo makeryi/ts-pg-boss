@@ -3,7 +3,7 @@ import PgBoss from 'pg-boss'
 
 export class Boss<T extends StandardSchemaV1> {
   readonly boss: PgBoss
-  private jobs: Job<T>[]
+  jobs: Job<T>[]
 
   constructor(connection: string) {
     this.boss = new PgBoss(connection)
@@ -18,6 +18,13 @@ export class Boss<T extends StandardSchemaV1> {
   }
 
   register(job: Job<T>) {
+    const preservedJob = this.jobs.find((item) => item.jobName === job.jobName)
+
+    if (preservedJob) {
+      console.log('Same jobName existed.')
+      return this
+    }
+
     this.jobs.push(job)
 
     return this
@@ -34,9 +41,9 @@ export class Boss<T extends StandardSchemaV1> {
 
 export class Job<T extends StandardSchemaV1> {
   private boss: PgBoss
-  private jobName: string
+  jobName: string
   jobInput!: T
-  private jobOptions?: PgBoss.SendOptions
+  jobOptions?: PgBoss.SendOptions
   private handler?: (
     jobs: PgBoss.Job<StandardSchemaV1.InferInput<T>>[]
   ) => Promise<void>
