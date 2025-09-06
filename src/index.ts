@@ -67,10 +67,7 @@ export class Job<T extends StandardSchemaV1> {
   }
 
   options(options: PgBoss.SendOptions) {
-    this.jobOptions = {
-      ...this.options,
-      ...options
-    }
+    this.jobOptions = options
 
     return this
   }
@@ -112,7 +109,10 @@ export class Job<T extends StandardSchemaV1> {
     }
   }
 
-  async emit(input: StandardSchemaV1.InferInput<T>) {
+  async emit(
+    input: StandardSchemaV1.InferInput<T>,
+    options?: PgBoss.SendOptions
+  ) {
     try {
       let result = this.jobInput['~standard'].validate(input)
 
@@ -127,7 +127,8 @@ export class Job<T extends StandardSchemaV1> {
       }
 
       const jobId = await this.boss.send(this.jobName, result.value, {
-        ...this.jobOptions
+        ...this.jobOptions,
+        ...options
       })
 
       if (!jobId) {
