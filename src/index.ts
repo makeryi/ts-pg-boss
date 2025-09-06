@@ -67,7 +67,10 @@ export class Job<T extends StandardSchemaV1> {
   }
 
   options(options: PgBoss.SendOptions) {
-    this.jobOptions = options
+    this.jobOptions = {
+      ...this.options,
+      ...options
+    }
 
     return this
   }
