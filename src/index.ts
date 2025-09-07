@@ -1,12 +1,12 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec'
-import PgBoss, { type ConnectionOptions } from 'pg-boss'
+import PgBoss from 'pg-boss'
 
 export class Boss<T extends StandardSchemaV1> {
   readonly boss: PgBoss
   jobs: Job<T>[]
 
-  constructor({ connectionOptions }: { connectionOptions: ConnectionOptions }) {
-    this.boss = new PgBoss(connectionOptions)
+  constructor(connection: string) {
+    this.boss = new PgBoss(connection)
     this.jobs = []
   }
 
