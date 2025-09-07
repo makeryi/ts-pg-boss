@@ -1,12 +1,12 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec'
-import PgBoss from 'pg-boss'
+import PgBoss, { type ConnectionOptions } from 'pg-boss'
 
 export class Boss<T extends StandardSchemaV1> {
   readonly boss: PgBoss
   jobs: Job<T>[]
 
-  constructor(connection: string) {
-    this.boss = new PgBoss(connection)
+  constructor({ connectionOptions }: { connectionOptions: ConnectionOptions }) {
+    this.boss = new PgBoss(connectionOptions)
     this.jobs = []
   }
 
@@ -140,6 +140,41 @@ export class Job<T extends StandardSchemaV1> {
       console.log(`Emitted job ${this.jobName} with ID: ${jobId}`)
     } catch (error) {
       console.error(`Failed to emit job ${this.jobName}:`, error)
+
+      throw error
+    }
+  }
+
+  async schedule({
+    cron,
+    input,
+    options
+  }: {
+    cron: string
+    input: StandardSchemaV1.InferInput<T>
+    options?: PgBoss.SendOptions
+  }) {
+    try {
+      let result = this.jobInput['~standard'].validate(input)
+
+      if (result instanceof Promise) result = await result
+
+      if (result.issues) {
+        throw new Error(JSON.stringify(result.issues, null, 2))
+      }
+
+      if (typeof result.value !== 'object' || result.value === null) {
+        throw new Error('The input must be an object.')
+      }
+
+      await this.boss.schedule(this.jobName, cron, result.value, {
+        ...this.jobOptions,
+        ...options
+      })
+
+      console.log(`scheduled job ${this.jobName}`)
+    } catch (error) {
+      console.error(`Failed to schedule job ${this.jobName}:`, error)
 
       throw error
     }
